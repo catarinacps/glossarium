@@ -6,42 +6,42 @@ Glossarium is a simple, easily customizable typst glossary inspired by [LaTeX gl
 
 ![Screenshot](.github/example.png)
 
-## Manual 
+## Manual
 
 ### Import and setup
 
-This manual assume you have a good enough understanding of typst markup and scripting. 
+This manual assume you have a good enough understanding of typst markup and scripting.
 
 For Typst 0.6.0 or later import the package from the typst preview repository:
 
 ```ts
-#import "@preview/glossarium:0.3.0": make-glossary, print-glossary, gls, glspl 
+#import "@preview/glossarium:0.3.0": make-glossary, print-glossary, gls, glspl
 ```
 
 For Typst before 0.6.0 or to use **glossarium** as a local module, download the package files into your project folder and import `glossarium.typ`:
 
 ```js
-#import "glossarium.typ": make-glossary, print-glossary, gls, glspl 
+#import "glossarium.typ": make-glossary, print-glossary, gls, glspl
 ```
 
 After importing the package and before making any calls to `gls`,` print-glossary` or `glspl`, please ***MAKE SURE*** you add this line
+
 ```js
 #show: make-glossary
 ```
 
 > *WHY DO WE NEED THAT ?* : In order to be able to create references to the terms in your glossary using typst ref syntax `@key` glossarium needs to setup some [show rules](https://typst.app/docs/tutorial/advanced-styling/) before any references exist. This is due to the way typst works, there is no workaround.
 >
->Therefore I recommend that you always put the `#show: ...` statement on the line just below the `#import` statement.
-
+> Therefore I recommend that you always put the `#show: ...` statement on the line just below the `#import` statement.
 
 ### Printing the glossary
 
-First we have to define the terms. 
-A term is a [dictionary](https://typst.app/docs/reference/types/dictionary/) composed of 2 required and 2 optional elements: 
+First we have to define the terms.
+A term is a [dictionary](https://typst.app/docs/reference/types/dictionary/) composed of 2 required and 2 optional elements:
 
 - `key` (string) *required, case-sensitive, unique*: used to reference the term.
-- `short` (string) *required*: the short form of the term replacing the term citation. 
-- `long` (string or content) *optional*: The long form of the term, displayed in the glossary and on the first citation of the term. 
+- `short` (string) *required*: the short form of the term replacing the term citation.
+- `long` (string or content) *optional*: The long form of the term, displayed in the glossary and on the first citation of the term.
 - `desc` (string or content) *optional*: The description of the term.
 - `group` (string) *optional, case-sensitive*: The group the term belongs to. The terms are displayed by groups in the glossary.
 
@@ -64,9 +64,9 @@ Then the terms are passed as a list to `print-glossary`
   (key: "kdecom", short: "KDE Community", desc:"An international team developing and distributing Open Source software."),
   // a full term with description containing markup
   (
-    key: "oidc", 
-    short: "OIDC", 
-    long: "OpenID Connect", 
+    key: "oidc",
+    short: "OIDC",
+    long: "OpenID Connect",
     desc: [OpenID is an open standard and decentralized authentication protocol promoted by the non-profit
      #link("https://en.wikipedia.org/wiki/OpenID#OpenID_Foundation")[OpenID Foundation].]
     group: "Accronyms",
@@ -91,7 +91,7 @@ Referencing terms is done using the key of the terms using the `gls` function or
 // referencing the OIDC term using gls
 #gls("oidc")
 // displaying the long form forcibly
-#gls("oidc", long: true)
+#gls("oidc", show-long: true)
 
 // referencing the OIDC term using the reference syntax
 @oidc
@@ -112,7 +112,7 @@ You can use the `glspl` function and the references supplements to pluralize ter
 You can also override the text displayed by setting the `display` argument.
 
 ```ts
-#gls("oidc", display: "whatever you want") 
+#gls("oidc", display: (short, suffix, long) => "whatever you want")
 ```
 
 ## Final tips
@@ -121,12 +121,43 @@ I recommend setting a show rule for the links to that your reader understand tha
 
 ```ts
 #show link: set text(fill: blue.darken(60%))
-// links are now blue ! 
+// links are now blue !
 ```
 
 ## Changelog
 
+### 0.4.0
+
+#### Added
+
+- New parameter `display` added to the `make-glossary` function. It is a ternary
+  function that receives the entry's `short`, `suffix` and `long`. You can set
+  it to modify how the reference syntax calls behave and how the term is
+  displayed in the text.
+- New parameter `display` added to the `print-glossary` function. It is a
+  ternary function that receives the entry's `short`, `long` and `description`
+  and returns the content to be displayed in the glossary list. Set it to modify
+  how the entries are styled and displayed.
+
+#### Refactor
+
+- Various refactors to the library's code.
+
+#### Fixed
+
+- `gslpl` now can receive the same parameters that `gsl` receives.
+
+#### Breaking
+
+- The `gls`'s parameter `long` is now called `show-long`. Otherwise, its
+  behaviour is unchanged.
+- `gls`'s `display` parameter modified, it is now a ternary function with the
+  same interface as the function received by the `make-glossary` function, as
+  previously described in this version `Added` section.
+
 ### 0.3.0
+
+#### Added
 
 - Introducing support for grouping terms in the glossary. Use the optional and case-sensitive key `group` to assign terms to specific groups. The appearanceof the glossary can be customized with the new parameter `enable-group-pagebreak`, allowing users to insert page breaks between groups for better organization. These enhancements were contributed by [indicatelovelace](https://github.com/indicatelovelace).
 

@@ -1,5 +1,5 @@
 #import "../../glossarium.typ": make-glossary, print-glossary, gls, glspl
-// Replace the local import with a import to the preview namespace. 
+// Replace the local import with a import to the preview namespace.
 // If you don't know what that mean, please go read typst documentation on how to import packages at https://typst.app/docs/packages/.
 
 #show: make-glossary
@@ -9,12 +9,15 @@
 //I recommend setting a show rule for the links to that your reader understand that they can click on the references to go to the term in the glossary.
 #show link: set text(fill: blue.darken(60%))
 
-There are many Belgian universities, like @kuleuven and @ulb. When repeating their names, they won't show as a long version: @kuleuven, @ulb. But we can still force them to be long using the `gls` function: #gls("kuleuven", long: true). We can also force them to be short: #gls("kuleuven", long: false). Finally, we can make them plural using the `suffix` parameter: #gls("kuleuven", suffix: "s") or using the additional `supplement` onto the `ref`: @kuleuven[s]. We can also use the plural function function `#glspl(key: "kuleuven")` #glspl("kuleuven").
+There are many Belgian universities, like @kuleuven and @ulb. When repeating their names, they won't show as a long version: @kuleuven, @ulb. But we can still force them to be long using the `gls`'s `show-long` parameter: `#gls("kuleuven", show-long: true)` becomes #gls("kuleuven", show-long: true). Also, we could've disabled the automatic first long entry by setting this parameter to `false`: #gls("ughent", show-long: false). Finally, we can make them plural by using the `suffix` parameter: #gls("kuleuven", suffix: "s") or with the additional `supplement` onto the `ref`: @kuleuven[s]. We can also use the plural function function `#glspl(key: "kuleuven")` #glspl("kuleuven").
 
+You can also override the text shown by setting the `display` function argument, which must receive as arguments the entry's short name, long name and description:
 
+```typst
+#gls("kuleuven", display: (short, suffix, long) => "whatever you want")
+```
 
-You can also override the text shown by setting the `display` argument: #gls("kuleuven", display: "whatever you want") 
-
+The term becomes #gls("kuleuven", display: (short, suffix, long) => "whatever you want").
 
 #pagebreak()
 
@@ -23,7 +26,6 @@ Numbering is, of course, correct when referencing the glossary: @kuleuven, @ulb,
 #pagebreak()
 
 At the moment, customization is not built-in to the function and instead follows a modified version of @ughent's template. But you can easily customize it by modifying `glossary.typ`. It is short enough and well documented enough to be easily understood. Additionally, you can load data externally and pass it as a parameter to the `glossary.with` function to load data from an external format.
-
 
 #pagebreak()
 = Glossary
@@ -51,12 +53,11 @@ At the moment, customization is not built-in to the function and instead follows
       key: "vub",
       short: "VUB",
       long: "Vrije Universiteit Brussel",
-      desc: [Proident veniam non aliquip commodo sunt cupidatat. Enim est cupidatat occaecat elit et. Adipisicing irure id consequat ullamco non. Labore sunt tempor et mollit. #gls("kuleuven", long: true)],
+      desc: [Proident veniam non aliquip commodo sunt cupidatat. Enim est cupidatat occaecat elit et. Adipisicing irure id consequat ullamco non. Labore sunt tempor et mollit. #gls("kuleuven", show-long: true)],
     ),
     (
       key: "ulb",
       short: "ULB",
-      long: "",
       desc: "Magna do officia sit reprehenderit anim esse. Eu Lorem ullamco incididunt minim quis sit sunt id mollit sit amet cupidatat. Labore incididunt enim culpa ex magna veniam proident non sint dolor. Incididunt proident esse culpa nostrud tempor cupidatat culpa consectetur excepteur ipsum deserunt duis exercitation. Non consectetur dolore culpa laboris in quis. Cupidatat aliquip exercitation id elit ipsum amet enim nostrud elit reprehenderit velit. Irure labore pariatur non dolore non officia laborum quis deserunt adipisicing cillum incididunt.",
     ),
     (
